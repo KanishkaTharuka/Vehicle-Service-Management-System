@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './breakdownHome.css';
 
 const BreakdownHome = () => {
@@ -12,7 +13,7 @@ const BreakdownHome = () => {
     breakdownType: '',
     emergencyLevel: '',
   });
-
+  const navigate = useNavigate();
   // Handle button clicks
   const handleContactClick = () => {
     setView('contact');
@@ -49,12 +50,15 @@ const BreakdownHome = () => {
         setFormData({
           vehicleRegistrationNumber: '',
           customerName: '',
+          customerContactNumber: '',
           vehicleMakeModel: '',
           vehicleType: '',
           currentLocation: '',
           breakdownType: '',
           emergencyLevel: '',
         });
+
+        navigate('/breakdown');
       } else {
         const errorData = await response.json();
         alert(`Error: ${errorData.message}`);
@@ -157,6 +161,18 @@ const BreakdownHome = () => {
                   name="customerName"
                   placeholder="Enter your name"
                   value={formData.customerName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="customerContactNumber">Customer contact number</label>
+                <input
+                  type="text"
+                  id="customerContactNumber"
+                  name="customerContactNumber"
+                  placeholder="Enter your contact number"
+                  value={formData.customerContactNumber}
                   onChange={handleInputChange}
                   required
                 />

@@ -13,6 +13,11 @@ const breakdownSchema = new Schema({
         required: true,
         trim: true
     },
+    customerContactNumber:{
+        type: Number,
+        required: true,
+        trim: true
+    },
     vehicleMakeModel: {
         type: String,
         required: true,

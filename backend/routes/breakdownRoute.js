@@ -7,6 +7,7 @@ router.route("/add").post(async (req, res) => {
         const { 
             vehicleRegistrationNumber, 
             customerName, 
+            customerContactNumber,
             vehicleMakeModel, 
             vehicleType, 
             currentLocation,
@@ -14,13 +15,14 @@ router.route("/add").post(async (req, res) => {
             emergencyLevel 
         } = req.body;
         
-        if (!vehicleRegistrationNumber || !customerName || !vehicleMakeModel || !vehicleType || !breakdownType || !emergencyLevel || !currentLocation) {
-            return res.status(400).json({ message: "All fields are required!" });
-        }
+        // if (!vehicleRegistrationNumber || !customerName || !customerContactNumber || !vehicleMakeModel || !vehicleType || !breakdownType || !emergencyLevel || !currentLocation) {
+        //     return res.status(400).json({ message: "All fields are required!" });
+        // }
 
         const newBreakdown = new Breakdown({
             vehicleRegistrationNumber,
             customerName,
+            customerContactNumber,
             vehicleMakeModel,
             vehicleType,
             currentLocation: {
@@ -54,11 +56,12 @@ router.route("/view").get((req, res) => {
 router.route("/update/:id").put(async(req, res) => {
     try {
         let id = req.params.id;
-        const { vehicleRegistrationNumber, customerName, vehicleMakeModel, vehicleType, currentLocation, breakdownType, emergencyLevel } = req.body;
+        const { vehicleRegistrationNumber, customerName, customerContactNumber, vehicleMakeModel, vehicleType, currentLocation, breakdownType, emergencyLevel } = req.body;
 
         const updateBreakdown = {
             vehicleRegistrationNumber,
             customerName,
+            customerContactNumber,
             vehicleMakeModel,
             vehicleType,
             currentLocation,
