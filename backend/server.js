@@ -36,10 +36,15 @@ mongoose.connect(MONGODB_URL, {
 });
 
 // Confirm MongoDB connection
-const connection = mongoose.connection;
-connection.once("open", () => {
+const connect = mongoose.connection;
+connect.once("open", () => {
     console.log("🔗 MongoDB Database Connected");
 });
+
+//access Routes file
+const breakdownRouter = require("./routes/breakdownRoute");
+
+app.use("/breakdown" , breakdownRouter);
 
 // Start the server
 app.listen(PORT, () => {
