@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './breakdownHome.css';
+import './breakdownAdminForm.css';
 
 const BreakdownHome = () => {
-  const [view, setView] = useState('contact');
+  const [view, setView] = useState('allDetails');
+  const [breakdowns, setBreakdowns] = useState([]);
   const [formData, setFormData] = useState({
     vehicleRegistrationNumber: '',
     customerName: '',
+    customerContactNumber: '',
     vehicleMakeModel: '',
     vehicleType: '',
     currentLocation: '',
@@ -15,16 +17,31 @@ const BreakdownHome = () => {
     isAccepted: false,
   });
   const navigate = useNavigate();
-  // Handle button clicks
+
+  // Fetch all breakdowns
+  useEffect(() => {
+    const fetchBreakdowns = async () => {
+      try {
+        const response = await fetch('http://localhost:8070/breakdown/view');
+        const data = await response.json();
+        console.log('Fetched breakdowns:', data); // Debugging
+        setBreakdowns(data);
+      } catch (error) {
+        console.error('Error fetching breakdowns:', error);
+      }
+    };
+
+    fetchBreakdowns();
+  }, []);
+
   const handleContactClick = () => {
-    setView('contact');
+    setView('allDetails');
   };
 
   const handleFormClick = () => {
     setView('form');
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -33,7 +50,6 @@ const BreakdownHome = () => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -48,6 +64,15 @@ const BreakdownHome = () => {
 
       if (response.ok) {
         alert('Breakdown request submitted successfully!');
+        
+        // Fetch the updated list of breakdowns
+        const updatedResponse = await fetch('http://localhost:8070/breakdown/view');
+        const updatedData = await updatedResponse.json();
+        
+        // Update the breakdowns state with the new data
+        setBreakdowns(updatedData);
+
+        // Reset the form data
         setFormData({
           vehicleRegistrationNumber: '',
           customerName: '',
@@ -57,10 +82,10 @@ const BreakdownHome = () => {
           currentLocation: '',
           breakdownType: '',
           emergencyLevel: '',
-          isAccepted: false,
         });
 
-        navigate('/breakdown');
+        // Navigate to the allDetails section
+        setView('allDetails');
       } else {
         const errorData = await response.json();
         alert(`Error: ${errorData.message}`);
@@ -71,15 +96,43 @@ const BreakdownHome = () => {
     }
   };
 
+  // Handle accepting a breakdown request
+  const handleAcceptRequest = async (breakdownId) => {
+    if (window.confirm('Are you sure you want to accept this request?')) {
+      try {
+        const response = await fetch(`http://localhost:8070/breakdown/accept/${breakdownId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          alert('Request accepted successfully!');
+          // Update the breakdowns state to reflect the accepted request
+          const updatedBreakdowns = breakdowns.map(b => 
+            b._id === breakdownId ? { ...b, isAccepted: true, acceptedAt: new Date() } : b
+          );
+          setBreakdowns(updatedBreakdowns);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        console.error('Error accepting request:', error);
+        alert('An error occurred while accepting the request.');
+      }
+    }
+  };
+
   return (
     <div className="modal">
-      {/* Header with buttons */}
       <div className="modal-header">
         <button
-          className={`nav-button ${view === 'contact' ? 'active' : ''}`}
+          className={`nav-button ${view === 'allDetails' ? 'active' : ''}`}
           onClick={handleContactClick}
         >
-          Breakdown Contact
+          Breakdown All details
         </button>
         <button
           className={`nav-button ${view === 'form' ? 'active' : ''}`}
@@ -89,54 +142,75 @@ const BreakdownHome = () => {
         </button>
       </div>
 
-      {/* Main content */}
       <div className="modal-content">
-        {view === 'contact' ? (
+        {view === 'allDetails' ? (
           <>
-            <h2>If you’ve broken down, there are two ways you can get in touch.</h2>
-            <div className="options-container">
-              {/* Option 1: Use the app */}
-              <div className="option">
-                <h3>1. Use our free app</h3>
-                <div className="app-section">
-                  <img src="path-to-sos-icon.png" alt="SOS Icon" className="sos-icon" />
-                  <div className="app-buttons">
-                    <a href="https://www.apple.com/app-store/" target="_blank" rel="noopener noreferrer">
-                      <img src="path-to-app-store.png" alt="App Store" className="store-button" />
-                    </a>
-                    <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer">
-                      <img src="path-to-google-play.png" alt="Google Play" className="store-button" />
-                    </a>
-                  </div>
-                </div>
-                <p>Our app can use your phone's GPS to pinpoint your location, making it a quick way to get our help.</p>
-                <p>You can even track your technician as they travel to you.</p>
-                <p>Once you've linked your policy to your app, you can use it to get our help in just a few taps.</p>
-                <p className="note">
-                  Please note, our app is not available for Excess and Fleet policies, or for vehicles registered in the Isle of Man.
-                </p>
-              </div>
-
-              {/* Option 2: Call us */}
-              <div className="option">
-                <h3>2. CALL US</h3>
-                <p>Give us a call and we'll be happy to help (even if you haven't got cover with us).</p>
-                <div className="phone-section">
-                  <h5>Call</h5>
-                  <div className="phone-number">
-                    <span className="phone-icon">📞</span>
-                    <span>0800 400 600</span>
-                  </div>
-                  <h5>Whatsapp</h5>
-                  <div className="phone-number">
-                    <span className="phone-icon">📞</span>
-                    <span>+44 141 349 0516</span>
-                  </div>
-                </div>
-                <p>Do you have difficulty hearing?</p>
-                <p>You can text the word 'RESCUE' and a message explaining what's happened to 61009.</p>
-                <p className="note">Texts may be chargeable, please check with your network provider.</p>
-              </div>
+            <h1>Breakdown Requests</h1>
+            <div className="breakdown-list">
+              <table className="breakdown-table">
+                <thead>
+                  <tr>
+                    <th>Vehicle Reg. No</th>
+                    <th>Customer Name</th>
+                    <th>Contact Number</th>
+                    <th>Vehicle Type</th>
+                    <th>Location</th>
+                    <th>Breakdown Type</th>
+                    <th>Emergency Level</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {breakdowns.map((breakdown) => (
+                    <tr key={breakdown._id}>
+                      <td>{breakdown.vehicleRegistrationNumber}</td>
+                      <td>{breakdown.customerName}</td>
+                      <td>{breakdown.customerContactNumber}</td>
+                      <td>{breakdown.vehicleType}</td>
+                      <td>{breakdown.currentLocation.address}</td>
+                      <td>{breakdown.breakdownType}</td>
+                      <td>{breakdown.emergencyLevel}</td>
+                      <td>
+                        {!breakdown.isAccepted ? (
+                          <div className="action-buttons">
+                            <button 
+                              className="edit-btn"
+                              onClick={() => navigate(`/breakdownedit/${breakdown._id}`)}
+                            >
+                              Edit
+                            </button>
+                            <button 
+                              className="delete-btn"
+                              onClick={async () => {
+                                if (window.confirm('Are you sure you want to delete this request?')) {
+                                  try {
+                                    await fetch(`http://localhost:8070/breakdown/delete/${breakdown._id}`, {
+                                      method: 'DELETE'
+                                    });
+                                    setBreakdowns(breakdowns.filter(b => b._id !== breakdown._id));
+                                  } catch (error) {
+                                    console.error('Error deleting breakdown:', error);
+                                  }
+                                }
+                              }}
+                            >
+                              Delete
+                            </button>
+                            <button 
+                              className="accept-btn"
+                              onClick={() => handleAcceptRequest(breakdown._id)}
+                            >
+                              Accept
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="accepted-text">Accepted on</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </>
         ) : (

@@ -15,9 +15,9 @@ router.route("/add").post(async (req, res) => {
             emergencyLevel 
         } = req.body;
         
-        // if (!vehicleRegistrationNumber || !customerName || !customerContactNumber || !vehicleMakeModel || !vehicleType || !breakdownType || !emergencyLevel || !currentLocation) {
-        //     return res.status(400).json({ message: "All fields are required!" });
-        // }
+        if (!vehicleRegistrationNumber || !customerName || !customerContactNumber || !vehicleMakeModel || !vehicleType || !breakdownType || !emergencyLevel || !currentLocation) {
+            return res.status(400).json({ message: "All fields are required!" });
+        }
 
         const newBreakdown = new Breakdown({
             vehicleRegistrationNumber,
@@ -106,5 +106,37 @@ router.route("/get/vehicle/:vehicleRegistrationNumber").get(async (req, res) => 
         res.status(200).send({status: "Breakdown Fetched", breakdown})
     })
 })
+
+// Accept a breakdown request
+router.route("/accept/:id").put(async (req, res) => {
+    try {
+        const breakdown = await Breakdown.findById(req.params.id);
+        if (!breakdown) {
+            return res.status(404).json({ message: "Breakdown request not found" });
+        }
+
+        // Mark the request as accepted
+        breakdown.isAccepted = true;
+        breakdown.acceptedAt = new Date();
+        await breakdown.save();
+
+        res.status(200).json({ message: "Request accepted successfully", data: breakdown });
+    } catch (error) {
+        console.error("Error accepting request:", error);
+        res.status(500).json({ message: "Error accepting request", error: error.message });
+    }
+});
+
+
+// Get breakdown by vehicle registration number
+router.route("/get/vehicle/:vehicleRegistrationNumber").get(async (req, res) => {
+    let vehicleRegistrationNumber = req.params.vehicleRegistrationNumber;
+    await Breakdown.find({ vehicleRegistrationNumber }).then((breakdown) => {
+        res.status(200).send({ status: "Breakdown Fetched", breakdown });
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).json({ message: "Error fetching breakdown", error: err.message });
+    });
+});
 
 module.exports = router;

@@ -59,7 +59,9 @@ const breakdownSchema = new Schema({
         required: true,
         enum: ['Low', 'Medium', 'High'],
         trim: true
-    }
+    },
+    isAccepted: { type: Boolean, default: false }
+
 }, {
     timestamps: true
 });
