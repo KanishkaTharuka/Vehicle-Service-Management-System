@@ -3,7 +3,16 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
+
+// import financeRoute from './routes/financeroute.js';
+// import breakdownRoute from './routes/financeroute.js';
+// import employeeRoute from './routes/financeroute.js';
+// import appointmentRoute from './routes/financeroute.js';
+
+
+
 const app = express();
+
 
 dotenv.config(); // Load environment variables
 
@@ -45,6 +54,18 @@ connect.once("open", () => {
 const breakdownRouter = require("./routes/breakdownRoute");
 
 app.use("/breakdown" , breakdownRouter);
+
+
+
+const financeRoute = require('./routes/financeroute');
+ const breakdownRoute = require('./routes/financeroute');
+ const employeeRoute = require('./routes/financeroute');
+ const appointmentRoute = require('./routes/financeroute');
+
+app.use('/finance', financeRoute);
+ app.use('/breakdown', breakdownRoute);
+ app.use('/employee', employeeRoute);
+ app.use('/appointment', appointmentRoute);
 
 
 // Start the server

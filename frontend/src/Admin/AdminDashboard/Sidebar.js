@@ -53,9 +53,9 @@ const Sidebar = () => {
         </li>
         <li
           className={`py-3 px-4 my-1.5 cursor-pointer text-navText text-base rounded-md transition-all duration-300 hover:bg-hoverBg hover:text-white ${
-            location.pathname === '/admin/financial' ? 'bg-activeBg text-white' : ''
+            location.pathname === '/admin/allincomeexpenses' ? 'bg-activeBg text-white' : ''
           }`}
-          onClick={() => navigate('/admin/financial')}
+          onClick={() => navigate('/admin/allincomeexpenses')}
         >
           Financial
         </li>
