@@ -1,0 +1,314 @@
+.employee-cards-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.employee-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.employee-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.employee-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.job-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.job-badge.manager {
+    background: #e74c3c;
+}
+
+.job-badge.supervisor {
+    background: #3498db;
+}
+
+.job-badge.worker {
+    background: #2ecc71;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.employee-detail {
+    margin-bottom: 10px;
+}
+
+.employee-detail label {
+    font-weight: bold;
+    color: #555;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.employee-detail p {
+    margin: 0;
+    color: #333;
+}
+
+.employee-detail-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.salary-section {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.working-days-input {
+    margin-bottom: 10px;
+}
+
+.working-days-input input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.salary-display label {
+    font-weight: bold;
+    color: #555;
+}
+
+.salary-amount {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #27ae60;
+    margin: 5px 0 0;
+}
+
+.loading, .error {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2rem;
+}
+
+.error {
+    color: #e74c3c;
+}
+.download-payslip-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.download-payslip-btn:hover {
+    background-color: #2980b9;
+}
+
+.download-payslip-btn:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+
+.download-payslip-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 15px;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.download-payslip-btn:hover {
+    background-color: #45a049;
+}
+
+.download-payslip-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+
+.salary-amount {
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.job-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+}
+
+.job-badge.manager {
+    background-color: #d32f2f;
+}
+
+.job-badge.supervisor {
+    background-color: #1976d2;
+}
+
+.job-badge.worker {
+    background-color: #388e3c;
+}
+.error-message {
+    color: #d32f2f;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.working-days-input input:invalid {
+    border-color: #d32f2f;
+}
+
+.working-days-input input:valid {
+    border-color: #388e3c;
+}
+
+
+.download-payslip-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+
+.employee-cards-container {
+    position: relative;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.employee-cards-container::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../../../public/payment.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    opacity: 5;
+    z-index: -1;
+}
+
+
+.employee-cards-container::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.85);
+    z-index: -1;
+}
+
+
+.employee-card {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.employee-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.page-title, .employee-detail label, .employee-detail p, 
+.salary-display label, .salary-amount {
+    color: #333;
+}
+
+
+.working-days-input input {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ddd;
+}
+
+
+.download-payslip-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.download-payslip-btn:hover {
+    background-color: #45a049;
+}
+
+.download-payslip-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: #d32f2f;
+    font-size: 12px;
+    margin-top: 5px;
+}
+.employee-cards-container {
+    background-image: url('../../../public/payment.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.employee-card {
+    background-color: rgba(255, 255, 255, 0.95);
+  
+}
