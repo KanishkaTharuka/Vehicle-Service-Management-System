@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './ItemBrowser.css';
+import Header from '../../home/Header';
+import Footer from '../../home/Footer';
 
 const ItemBrowser = () => {
     const [items, setItems] = useState([]);
@@ -118,6 +120,8 @@ const ItemBrowser = () => {
     }
 
     return (
+        <div>
+             <Header />
         <div className="item-browser">
             <div className="header">
                 <div className="header-left">
@@ -246,6 +250,8 @@ const ItemBrowser = () => {
                 </div>
             </div>
             
+        </div>
+        <Footer/>
         </div>
     );
 };

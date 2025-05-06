@@ -61,7 +61,8 @@ const Header = () => {
           <span className="text-white hover:text-hoverGray">APPOINTMENT</span>
         </li>
 
-        <li className="relative mx-4 cursor-pointer text-sm">
+        <li className="relative mx-4 cursor-pointer text-sm"
+        onClick={() => (window.location.href = '/itemBrowser')}>
           <span className="text-white hover:text-hoverGray">ONLINE STORE</span>
         </li>
 

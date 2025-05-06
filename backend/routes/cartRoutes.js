@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
 
-// Get cart by session ID
-router.get('/:sessionId', async (req, res) => {
+// Get cart
+router.get('/', async (req, res) => {
     try {
-        const cart = await Cart.findOne({ sessionId: req.params.sessionId });
+        const cart = await Cart.findOne();
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
@@ -18,13 +18,12 @@ router.get('/:sessionId', async (req, res) => {
 // Add item to cart
 router.post('/add', async (req, res) => {
     try {
-        const { sessionId, itemId, name, quantity, price, imageUrl } = req.body;
+        const { itemId, name, quantity, price, imageUrl } = req.body;
         
-        let cart = await Cart.findOne({ sessionId });
+        let cart = await Cart.findOne();
         
         if (!cart) {
             cart = new Cart({
-                sessionId,
                 items: []
             });
         }
@@ -58,10 +57,10 @@ router.post('/add', async (req, res) => {
 });
 
 // Update item quantity
-router.put('/update/:sessionId/:itemId', async (req, res) => {
+router.put('/update/:itemId', async (req, res) => {
     try {
         const { quantity } = req.body;
-        const cart = await Cart.findOne({ sessionId: req.params.sessionId });
+        const cart = await Cart.findOne();
         
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
@@ -87,9 +86,9 @@ router.put('/update/:sessionId/:itemId', async (req, res) => {
 });
 
 // Remove item from cart
-router.delete('/remove/:sessionId/:itemId', async (req, res) => {
+router.delete('/remove/:itemId', async (req, res) => {
     try {
-        const cart = await Cart.findOne({ sessionId: req.params.sessionId });
+        const cart = await Cart.findOne();
         
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
@@ -109,9 +108,9 @@ router.delete('/remove/:sessionId/:itemId', async (req, res) => {
 });
 
 // Clear cart
-router.delete('/clear/:sessionId', async (req, res) => {
+router.delete('/clear', async (req, res) => {
     try {
-        const cart = await Cart.findOne({ sessionId: req.params.sessionId });
+        const cart = await Cart.findOne();
         
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });

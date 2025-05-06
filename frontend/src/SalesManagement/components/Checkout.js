@@ -77,18 +77,30 @@ const Checkout = () => {
         try {
             const orderData = {
                 items: selectedItems,
-                shippingDetails: formData,
+                customerDetails: {
+                    fullName: formData.fullName,
+                    email: formData.email,
+                    phone: formData.phone,
+                    address: formData.address,
+                    city: formData.city,
+                    state: formData.state,
+                    zipCode: formData.zipCode
+                },
                 totalAmount,
-                sessionId: localStorage.getItem('sessionId')
+                paymentMethod: formData.paymentMethod
             };
 
             const response = await axios.post('http://localhost:8070/api/orders', orderData);
             
             // Clear cart after successful order
-            await axios.delete(`http://localhost:8070/api/cart/clear/${localStorage.getItem('sessionId')}`);
+            await axios.delete('http://localhost:8070/api/cart/clear');
             
-            // Navigate to order confirmation
-            navigate('/order-confirmation', { state: { orderId: response.data.orderId } });
+            // Navigate to order confirmation with the order ID
+            navigate('/order-confirmation', { 
+                state: { 
+                    orderId: response.data._id 
+                } 
+            });
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to place order. Please try again.');
         }

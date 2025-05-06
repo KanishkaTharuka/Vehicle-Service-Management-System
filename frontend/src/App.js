@@ -26,6 +26,8 @@ import ItemManagement from './Admin/Salesmanager/ItemManagement';
 import ItemBrowser from './SalesManagement/components/ItemBrowser';
 import Cart from './SalesManagement/components/Cart';
 import Checkout from './SalesManagement/components/Checkout';
+import Orderonfirmation from './SalesManagement/components/OrderConfirmation'
+import Category from './SalesManagement/components/Category';
 
 function App() {
   return (
@@ -59,9 +61,9 @@ function App() {
         <Route path="/items" element={<ItemManagement/>}/>
         <Route path="/cart" element={<Cart/>}/>
         <Route path="/checkout" element={<Checkout/>}/>
-        <Route path="/" element={<ItemBrowser/>}/>
-
-
+        <Route path="/itemBrowser" element={<ItemBrowser/>}/>
+        <Route path="/order-confirmation" element={<Orderonfirmation/>}/>
+        <Route path="/cate" element={<Category />}/>
       </Routes>
     </Router>
   );
