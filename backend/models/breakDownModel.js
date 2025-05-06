@@ -29,6 +29,7 @@ const breakdownSchema = new Schema({
         enum: ['Car', 'Truck', 'Motorcycle', 'Other'],
         trim: true
     },
+    
     currentLocation: {
         type: {
             type: String,
@@ -48,6 +49,12 @@ const breakdownSchema = new Schema({
             }
         }
     },
+    totalDestination: {
+        type: String,
+        required: true,
+        trim: true
+    },
+
     breakdownType: {
         type: String,
         required: true,
@@ -60,8 +67,12 @@ const breakdownSchema = new Schema({
         enum: ['Low', 'Medium', 'High'],
         trim: true
     },
-    isAccepted: { type: Boolean, default: false }
-
+    isAccepted: { type: Boolean, default: false },
+    selectedDriverName: {
+        type: String,
+        trim: true
+    },
+    
 }, {
     timestamps: true
 });

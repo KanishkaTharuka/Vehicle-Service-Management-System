@@ -11,11 +11,12 @@ router.route("/add").post(async (req, res) => {
             vehicleMakeModel, 
             vehicleType, 
             currentLocation,
+            totalDestination,
             breakdownType, 
             emergencyLevel 
         } = req.body;
         
-        if (!vehicleRegistrationNumber || !customerName || !customerContactNumber || !vehicleMakeModel || !vehicleType || !breakdownType || !emergencyLevel || !currentLocation) {
+        if (!vehicleRegistrationNumber || !customerName || !customerContactNumber || !vehicleMakeModel || !vehicleType || !breakdownType || !emergencyLevel || !currentLocation || !totalDestination) {
             return res.status(400).json({ message: "All fields are required!" });
         }
 
@@ -29,6 +30,7 @@ router.route("/add").post(async (req, res) => {
                 type: 'Address',
                 address: currentLocation
             },
+            totalDestination,
             breakdownType,
             emergencyLevel
         });
@@ -56,7 +58,7 @@ router.route("/view").get((req, res) => {
 router.route("/update/:id").put(async(req, res) => {
     try {
         let id = req.params.id;
-        const { vehicleRegistrationNumber, customerName, customerContactNumber, vehicleMakeModel, vehicleType, currentLocation, breakdownType, emergencyLevel } = req.body;
+        const { vehicleRegistrationNumber, customerName, customerContactNumber, vehicleMakeModel, vehicleType, currentLocation, totalDestination, breakdownType, emergencyLevel } = req.body;
 
         const updateBreakdown = {
             vehicleRegistrationNumber,
@@ -65,6 +67,7 @@ router.route("/update/:id").put(async(req, res) => {
             vehicleMakeModel,
             vehicleType,
             currentLocation,
+            totalDestination,
             breakdownType,
             emergencyLevel
         }
@@ -137,6 +140,17 @@ router.route("/get/vehicle/:vehicleRegistrationNumber").get(async (req, res) => 
         console.log(err);
         res.status(500).json({ message: "Error fetching breakdown", error: err.message });
     });
+});
+
+//count breakdowns requests
+router.route("/count").get(async (req, res) => {
+    try {
+        const count = await Breakdown.countDocuments();
+        res.status(200).json({ count });
+    } catch (error) {
+        console.error("Error counting breakdowns:", error);
+        res.status(500).json({ message: "Error counting breakdowns", error: error.message });
+    }
 });
 
 module.exports = router;
