@@ -6,7 +6,7 @@ import BreakdownFormAdmin from './Admin/breakdownService/breakdownFormAdmin';
 import BreakdownFormAdminView from './Admin/breakdownService/breakdownFormAdminView';
 import Home from './home/homepage';
 import './index.css';
-
+//janith
 import FinancexpencesView from './Admin/Finace/FinancexpencesView';
 import FinanceExpensesForm from './Admin/Finace/Financexpencesform';
 import FinancexpenceUpdate from './Admin/Finace/FinancexpenceUpdate'; 
@@ -19,6 +19,13 @@ import FinaceIncomeForm from './Admin/Finace/incomeview';
 import FinanceIncomeUpdate from './Admin/Finace/FinancIncomeUpdate';
 
 import MainContent from './Admin/AdminDashboard/MainContent';
+
+// pawan
+import CategoryManagement from './Admin/Salesmanager/CategoryManagement';
+import ItemManagement from './Admin/Salesmanager/ItemManagement';
+import ItemBrowser from './SalesManagement/components/ItemBrowser';
+import Cart from './SalesManagement/components/Cart';
+import Checkout from './SalesManagement/components/Checkout';
 
 function App() {
   return (
@@ -35,7 +42,7 @@ function App() {
         
         <Route path="/admin/mainContent" element={<MainContent />} />
 
-
+         {/* janith */}
                     <Route path="/appointments" element={<AllAppointmentsView />} />
                     <Route path="/allemployees" element={<AllEmployeeView />} />
                     <Route path="/acceptedbreakdowns" element={<AcceptedBreakdowns />} />
@@ -46,7 +53,13 @@ function App() {
                     <Route path="/updateIncome/:id" element={<FinanceIncomeUpdate />} /> {}
                     <Route path="/income" element={<FinaceIncomeForm />} />
 
+        {/* pawan */}
 
+        <Route path="/category" element={<CategoryManagement/>}/>
+        <Route path="/items" element={<ItemManagement/>}/>
+        <Route path="/cart" element={<Cart/>}/>
+        <Route path="/checkout" element={<Checkout/>}/>
+        <Route path="/" element={<ItemBrowser/>}/>
 
 
       </Routes>
