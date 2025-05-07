@@ -68,6 +68,19 @@ app.use('/finance', financeRoute);
  app.use('/appointment', appointmentRoute);
 
 
+ //pawan
+ // Routes
+const categoryRoutes = require('./routes/categoryRoutes');
+const itemRoutes = require('./routes/itemRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+
+app.use('/api/categories', categoryRoutes);
+app.use('/api/items', itemRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/cart', cartRoutes);
+
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on port ${PORT}`);
