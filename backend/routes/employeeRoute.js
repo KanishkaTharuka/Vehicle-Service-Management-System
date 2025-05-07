@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const Employee = require('../models/employeeModel');
+const Employee = require('../models/employeeModel2');
 
 
 // Get employees with position 'Driver'
