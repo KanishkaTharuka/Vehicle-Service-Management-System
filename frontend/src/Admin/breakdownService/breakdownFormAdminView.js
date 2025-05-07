@@ -9,6 +9,7 @@ const BreakdownFormAdminView = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredBreakdowns, setFilteredBreakdowns] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [drivers, setDrivers] = useState([]);
 
   useEffect(() => {
     fetchBreakdowns();
@@ -34,14 +35,34 @@ const BreakdownFormAdminView = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      try {
+        const response = await axios.get('http://localhost:8070/employees?position=Driver');
+        setDrivers(response.data);
+      } catch (error) {
+        console.error('Error fetching drivers:', error);
+      }
+    };
+
+    fetchDrivers();
+  }, []);
+
   const handleDriverSelection = (e, breakdownId) => {
     const selectedDriverName = e.target.value;
     setBreakdowns(breakdowns.map((b) =>
       b._id === breakdownId ? { ...b, selectedDriverName } : b
     ));
+
+    // Update the backend with the selected driver
+    axios.put(`http://localhost:8070/breakdown/update/driver/${breakdownId}`, {
+      selectedDriverName,
+    }).catch((error) => {
+      console.error('Error updating driver selection:', error);
+    });
   };
 
-  const handleAcceptRequest = async (breakdownId, customerNumber) => {
+  const handleAcceptRequest = async (breakdownId, customerNumber, driverName, driverPhone) => {
     if (window.confirm('Are you sure you want to accept this request?')) {
       try {
         const response = await fetch(`http://localhost:8070/breakdown/accept/${breakdownId}`, {
@@ -60,9 +81,14 @@ const BreakdownFormAdminView = () => {
 
           // Send WhatsApp message to customer
           const companyNumber = '+94775397531';
-          const message = `Your breakdown request with ID ${breakdownId} has been accepted. Please contact us at ${companyNumber} for further assistance.`;
-          const whatsappUrl = `https://web.whatsapp.com/send?phone=${customerNumber}&text=${encodeURIComponent(message)}`;
-          window.open(whatsappUrl, '_blank');
+          const customerMessage = `Your breakdown request with ID ${breakdownId} has been accepted. Please contact driver ${driverName} at ${driverPhone} for further assistance.`;
+          const customerWhatsappUrl = `https://web.whatsapp.com/send?phone=${customerNumber}&text=${encodeURIComponent(customerMessage)}`;
+          window.open(customerWhatsappUrl, '_blank');
+
+          // Send WhatsApp message to driver
+          // const driverMessage = `You have been assigned to a breakdown request with ID ${breakdownId}. Please contact the company at ${companyNumber} for details.`;
+          // const driverWhatsappUrl = `https://web.whatsapp.com/send?phone=${driverPhone}&text=${encodeURIComponent(driverMessage)}`;
+          // window.open(driverWhatsappUrl, '_blank');
         } else {
           const errorData = await response.json();
           alert(`Error: ${errorData.message}`);
@@ -85,14 +111,6 @@ const BreakdownFormAdminView = () => {
     }
   };
 
-  // const handleSendReport = async (breakdownId) => {
-  //   const phoneNumber = "0774630980"
-  //   const message = `Your breakdown request with ID ${breakdownId} has been accepted.`;
-  //   const whatsappUrl = `http://web.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`; 
-
-  //   //open the whatsapp chat in new window
-  //   window.open(whatsappUrl,"_blank");
-  // }
 
   const generatePDF = () => {
     const doc = new jsPDF({
@@ -196,6 +214,34 @@ const BreakdownFormAdminView = () => {
     doc.save(`breakdown-requests-${new Date().toISOString().slice(0, 10)}.pdf`);
   };
 
+  const handleSendEmailToDriver = async (driverEmail, breakdownDetails) => {
+    try {
+      await axios.post('http://localhost:8070/email/send', {
+        to: driverEmail,
+        subject: 'New Breakdown Assignment',
+        body: `Dear Driver,
+
+            You have been assigned to a new breakdown request. Here are the details:
+
+            Customer Name: ${breakdownDetails.customerName}
+            Customer Phone: ${breakdownDetails.customerContactNumber}
+            Location: ${breakdownDetails.currentLocation.type === 'Address' ? breakdownDetails.currentLocation.address : `${breakdownDetails.currentLocation.coordinates[0]}, ${breakdownDetails.currentLocation.coordinates[1]}`}
+            Vehicle: ${breakdownDetails.vehicleMakeModel} (${breakdownDetails.vehicleType})
+            Breakdown Type: ${breakdownDetails.breakdownType}
+            Emergency Level: ${breakdownDetails.emergencyLevel}
+
+            Please contact the customer as soon as possible.
+
+            Thank you,
+            AUTOEXPERT Team`,
+      });
+      
+      alert('Email sent to the driver successfully!');
+    } catch (error) {
+      console.error('Error sending email to driver:', error);
+      alert('Failed to send email to the driver.');
+    }
+  };
 
 
   return (
@@ -335,9 +381,11 @@ const BreakdownFormAdminView = () => {
                           onChange={(e) => handleDriverSelection(e, breakdown._id)}
                         >
                           <option value="">Select Driver</option>
-                          <option value="Driver 1">Driver 1</option>
-                          <option value="Driver 2">Driver 2</option>
-                          <option value="Driver 3">Driver 3</option>
+                          {drivers.map((driver) => (
+                            <option key={driver._id} value={driver.name}>
+                              {driver.name}
+                            </option>
+                          ))}
                         </select>
                       )}
                     </div>
@@ -347,8 +395,16 @@ const BreakdownFormAdminView = () => {
                         <button
                           className="flex-1 py-2 bg-customGreen text-white border-none rounded-md font-medium hover:bg-customGreen transition-all flex items-center justify-center gap-1 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-70"
                           onClick={() => {
-                            handleAcceptRequest(breakdown._id, breakdown.customerContactNumber);
-                            // handleSendReport(breakdown._id);
+                            handleAcceptRequest(
+                              breakdown._id,
+                              breakdown.customerContactNumber,
+                              breakdown.selectedDriverName,
+                              drivers.find((driver) => driver.name === breakdown.selectedDriverName)?.phone
+                            );
+                            handleSendEmailToDriver(
+                              drivers.find((driver) => driver.name === breakdown.selectedDriverName)?.email,
+                              breakdown
+                            );
                           }}
                           disabled={!breakdown.selectedDriverName}
                         >

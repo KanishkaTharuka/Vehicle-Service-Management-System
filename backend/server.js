@@ -52,8 +52,12 @@ connect.once("open", () => {
 
 //access Routes file
 const breakdownRouter = require("./routes/breakdownRoute");
+const employeeRouter = require('./routes/employeeRoute');
+const emailRouter = require('./routes/emailRoute');
 
 app.use("/breakdown" , breakdownRouter);
+app.use('/employees', employeeRouter);
+app.use('/email', emailRouter);
 
 
 

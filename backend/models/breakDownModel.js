@@ -72,6 +72,10 @@ const breakdownSchema = new Schema({
         type: String,
         trim: true
     },
+    selectedDriverContactNumber: {
+        type: Number,
+        trim: true
+    },
     
 }, {
     timestamps: true
