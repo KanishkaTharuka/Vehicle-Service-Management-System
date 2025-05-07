@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ItemManagement.css';
+import SalesManagerSidebar from './SalesManagerSidebar';
 
 const ItemManagement = () => {
     const [items, setItems] = useState([]);
@@ -111,210 +112,211 @@ const ItemManagement = () => {
 
     return (
         <div className="item-management">
-            <h2>Item Management</h2>
-            
-            {error && <div className="alert alert-danger">{error}</div>}
-            {success && <div className="alert alert-success">{success}</div>}
+            <SalesManagerSidebar />
+                <h2>Item Management</h2>
 
-            <form onSubmit={handleSubmit} className="item-form">
-                <div className="form-row">
+                {error && <div className="alert alert-danger">{error}</div>}
+                {success && <div className="alert alert-success">{success}</div>}
+
+                <form onSubmit={handleSubmit} className="item-form">
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Item Code</label>
+                            <input
+                                type="text"
+                                name="itemCode"
+                                value={formData.itemCode}
+                                onChange={handleChange}
+                                required
+                                className="form-control"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Name</label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Company Name</label>
+                            <input
+                                type="text"
+                                name="companyName"
+                                value={formData.companyName}
+                                onChange={handleChange}
+                                required
+                                className="form-control"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Category</label>
+                            <select
+                                name="category"
+                                value={formData.category}
+                                onChange={handleChange}
+                                required
+                                className="form-control"
+                            >
+                                <option value="">Select a category</option>
+                                {categories.map(category => (
+                                    <option key={category._id} value={category._id}>
+                                        {category.name} ({category.categoryCode})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
                     <div className="form-group">
-                        <label>Item Code</label>
-                        <input
-                            type="text"
-                            name="itemCode"
-                            value={formData.itemCode}
+                        <label>Description</label>
+                        <textarea
+                            name="description"
+                            value={formData.description}
                             onChange={handleChange}
                             required
                             className="form-control"
+                            rows="3"
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label>Name</label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            required
-                            className="form-control"
-                        />
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Quantity</label>
+                            <input
+                                type="number"
+                                name="quantity"
+                                value={formData.quantity}
+                                onChange={handleChange}
+                                required
+                                min="0"
+                                className="form-control"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Buying Price</label>
+                            <input
+                                type="number"
+                                name="buyingPrice"
+                                value={formData.buyingPrice}
+                                onChange={handleChange}
+                                required
+                                min="0"
+                                step="0.01"
+                                className="form-control"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Selling Price</label>
+                            <input
+                                type="number"
+                                name="sellingPrice"
+                                value={formData.sellingPrice}
+                                onChange={handleChange}
+                                required
+                                min="0"
+                                step="0.01"
+                                className="form-control"
+                            />
+                        </div>
                     </div>
-                </div>
 
-                <div className="form-row">
                     <div className="form-group">
-                        <label>Company Name</label>
+                        <label>Image URL</label>
                         <input
-                            type="text"
-                            name="companyName"
-                            value={formData.companyName}
+                            type="url"
+                            name="imageUrl"
+                            value={formData.imageUrl}
                             onChange={handleChange}
-                            required
                             className="form-control"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Category</label>
-                        <select
-                            name="category"
-                            value={formData.category}
-                            onChange={handleChange}
-                            required
-                            className="form-control"
-                        >
-                            <option value="">Select a category</option>
-                            {categories.map(category => (
-                                <option key={category._id} value={category._id}>
-                                    {category.name} ({category.categoryCode})
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-
-                <div className="form-group">
-                    <label>Description</label>
-                    <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        required
-                        className="form-control"
-                        rows="3"
-                    />
-                </div>
-
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Quantity</label>
-                        <input
-                            type="number"
-                            name="quantity"
-                            value={formData.quantity}
-                            onChange={handleChange}
-                            required
-                            min="0"
-                            className="form-control"
+                            placeholder="https://example.com/image.jpg"
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label>Buying Price</label>
-                        <input
-                            type="number"
-                            name="buyingPrice"
-                            value={formData.buyingPrice}
-                            onChange={handleChange}
-                            required
-                            min="0"
-                            step="0.01"
-                            className="form-control"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Selling Price</label>
-                        <input
-                            type="number"
-                            name="sellingPrice"
-                            value={formData.sellingPrice}
-                            onChange={handleChange}
-                            required
-                            min="0"
-                            step="0.01"
-                            className="form-control"
-                        />
-                    </div>
-                </div>
-
-                <div className="form-group">
-                    <label>Image URL</label>
-                    <input
-                        type="url"
-                        name="imageUrl"
-                        value={formData.imageUrl}
-                        onChange={handleChange}
-                        className="form-control"
-                        placeholder="https://example.com/image.jpg"
-                    />
-                </div>
-
-                <button type="submit" className="btn btn-primary">
-                    {editingId ? 'Update Item' : 'Add Item'}
-                </button>
-                {editingId && (
-                    <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={() => {
-                            setFormData({
-                                itemCode: '',
-                                name: '',
-                                companyName: '',
-                                description: '',
-                                quantity: '',
-                                buyingPrice: '',
-                                sellingPrice: '',
-                                category: '',
-                                imageUrl: ''
-                            });
-                            setEditingId(null);
-                        }}
-                    >
-                        Cancel
+                    <button type="submit" className="btn btn-primary">
+                        {editingId ? 'Update Item' : 'Add Item'}
                     </button>
-                )}
-            </form>
+                    {editingId && (
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => {
+                                setFormData({
+                                    itemCode: '',
+                                    name: '',
+                                    companyName: '',
+                                    description: '',
+                                    quantity: '',
+                                    buyingPrice: '',
+                                    sellingPrice: '',
+                                    category: '',
+                                    imageUrl: ''
+                                });
+                                setEditingId(null);
+                            }}
+                        >
+                            Cancel
+                        </button>
+                    )}
+                </form>
 
-            <div className="items-list">
-                <h3>Items</h3>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Code</th>
-                            <th>Name</th>
-                            <th>Company</th>
-                            <th>Category</th>
-                            <th>Quantity</th>
-                            <th>Buying Price</th>
-                            <th>Selling Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map(item => (
-                            <tr key={item._id}>
-                                <td>{item.itemCode}</td>
-                                <td>{item.name}</td>
-                                <td>{item.companyName}</td>
-                                <td>{item.category?.name}</td>
-                                <td>{item.quantity}</td>
-                                <td>${item.buyingPrice.toFixed(2)}</td>
-                                <td>${item.sellingPrice.toFixed(2)}</td>
-                                <td>
-                                    <button
-                                        className="btn btn-sm btn-primary"
-                                        onClick={() => handleEdit(item)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        className="btn btn-sm btn-danger"
-                                        onClick={() => handleDelete(item._id)}
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
+                <div className="items-list">
+                    <h3>Items</h3>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Company</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Buying Price</th>
+                                <th>Selling Price</th>
+                                <th>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {items.map(item => (
+                                <tr key={item._id}>
+                                    <td>{item.itemCode}</td>
+                                    <td>{item.name}</td>
+                                    <td>{item.companyName}</td>
+                                    <td>{item.category?.name}</td>
+                                    <td>{item.quantity}</td>
+                                    <td>${item.buyingPrice.toFixed(2)}</td>
+                                    <td>${item.sellingPrice.toFixed(2)}</td>
+                                    <td>
+                                        <button
+                                            className="btn btn-sm btn-primary"
+                                            onClick={() => handleEdit(item)}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="btn btn-sm btn-danger"
+                                            onClick={() => handleDelete(item._id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
         </div>
     );
 };
 
-export default ItemManagement; 
+export default ItemManagement;

@@ -1,6 +1,6 @@
 .item-management {
     max-width: 1200px;
-    margin: 2rem auto;
+    margin-left: 300px;
     padding: 2rem;
     background: #fff;
     border-radius: 8px;
@@ -159,4 +159,4 @@
         width: 100%;
         margin-bottom: 0.5rem;
     }
-} 
+}

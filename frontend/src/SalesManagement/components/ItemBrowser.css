@@ -3,7 +3,7 @@
     background-color: #f5f5f5;
     display: flex;
     flex-direction: column;
-    max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
     padding: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -124,12 +124,31 @@
     font-size: 0.8rem;
 }
 
-.main-content {
-    flex: 1;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+/* New welcome banner styling */
+.welcome-banner {
     width: 100%;
+    height: 400px;
+    background-color: #002171; /* Dark blue color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.welcome-banner h2 {
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.main-content {
+    display: flex;
+    padding: 0;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .sidebar {
@@ -226,11 +245,34 @@
 .items-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    max-width: 1200px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    width: 100%;
     margin: 0 auto;
     padding: 20px 0;
+}
+
+/* Custom grid styles for Tailwind */
+.grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1280px) {
+    .grid-cols-4 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1024px) {
+    .grid-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .grid-cols-4 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
 }
 
 .item-card {
@@ -243,6 +285,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    width: 100%;
 }
 
 .item-card:hover {
@@ -251,7 +294,7 @@
 }
 
 .item-image {
-    height: 350px;
+    height: 250px;
     background: #f5f5f5;
     display: flex;
     align-items: center;
@@ -458,6 +501,12 @@
     }
 }
 
+@media (max-width: 1024px) {
+    .items-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
@@ -469,57 +518,16 @@
     }
 
     .items-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .welcome-banner h2 {
+        font-size: 2rem;
     }
 }
 
-.slideshow-container {
-    width: 100%;
-    height: 400px;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 20px;
+@media (max-width: 480px) {
+    .items-grid {
+        grid-template-columns: 1fr;
+    }
 }
-
-.slideshow {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-}
-
-.slide {
-    min-width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.slideshow-controls {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    z-index: 10;
-}
-
-.slide-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.slide-dot.active {
-    background: white;
-}
-
-.slide-dot:hover {
-    background: rgba(255, 255, 255, 0.8);
-} 

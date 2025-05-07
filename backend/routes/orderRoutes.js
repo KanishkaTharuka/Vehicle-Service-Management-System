@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
 const Item = require('../models/Item');
+const { sendOrderStatusEmail } = require('../utils/emailService');
 
 // Create a new order
 router.post('/', async (req, res) => {
@@ -82,9 +83,88 @@ router.patch('/:id/status', async (req, res) => {
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }
+
+        // Send email notification for status update
+        try {
+            await sendOrderStatusEmail(order, status);
+        } catch (emailError) {
+            console.error('Failed to send email notification:', emailError);
+            // Continue with the response even if email fails
+        }
+
         res.json(order);
     } catch (error) {
         res.status(400).json({ message: error.message });
+    }
+});
+
+// Accept an order
+router.patch('/:id/accept', async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        if (order.status !== 'pending' && order.status !== 'processing') {
+            return res.status(400).json({
+                message: `Cannot accept order with status: ${order.status}. Only pending or processing orders can be accepted.`
+            });
+        }
+
+        order.status = 'accepted';
+        await order.save();
+
+        // Send email notification
+        try {
+            await sendOrderStatusEmail(order, 'accepted');
+        } catch (emailError) {
+            console.error('Failed to send email notification:', emailError);
+            // Continue with the response even if email fails
+        }
+
+        res.json(order);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Decline an order
+router.patch('/:id/decline', async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        if (order.status !== 'pending' && order.status !== 'processing') {
+            return res.status(400).json({
+                message: `Cannot decline order with status: ${order.status}. Only pending or processing orders can be declined.`
+            });
+        }
+
+        // Restore item quantities
+        for (const item of order.items) {
+            await Item.findByIdAndUpdate(
+                item.itemId,
+                { $inc: { quantity: item.quantity } }
+            );
+        }
+
+        order.status = 'declined';
+        await order.save();
+
+        // Send email notification
+        try {
+            await sendOrderStatusEmail(order, 'declined');
+        } catch (emailError) {
+            console.error('Failed to send email notification:', emailError);
+            // Continue with the response even if email fails
+        }
+
+        res.json(order);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 });
 
@@ -106,4 +186,36 @@ router.patch('/:id/payment', async (req, res) => {
     }
 });
 
-module.exports = router; 
+// Delete an order
+router.delete('/:id', async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        // If the order is already delivered or shipped, don't allow deletion
+        if (order.status === 'delivered' || order.status === 'shipped') {
+            return res.status(400).json({
+                message: 'Cannot delete orders that have been shipped or delivered'
+            });
+        }
+
+        // If the order is in processing or pending state, restore the item quantities
+        if (order.status === 'pending' || order.status === 'processing') {
+            for (const item of order.items) {
+                await Item.findByIdAndUpdate(
+                    item.itemId,
+                    { $inc: { quantity: item.quantity } }
+                );
+            }
+        }
+
+        await Order.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Order deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+module.exports = router;
