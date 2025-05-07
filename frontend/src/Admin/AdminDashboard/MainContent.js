@@ -9,6 +9,16 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointEleme
 
 const MainContent = () => {
   const [breakdownCount, setBreakdownCount] = useState(0);
+  const [breakdownServiceData, setBreakdownServiceData] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: 'Breakdown Service Types',
+        data: [],
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+      },
+    ],
+  });
 
   useEffect(() => {
     const fetchBreakdownCount = async () => {
@@ -20,7 +30,33 @@ const MainContent = () => {
       }
     };
 
+    const fetchBreakdownServiceData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8070/breakdown/view');
+        const breakdowns = response.data;
+
+        const breakdownTypes = ['Mechanical', 'Electrical', 'Flat Tire', 'Fuel Issue', 'Other'];
+        const breakdownCounts = breakdownTypes.map((type) =>
+          breakdowns.filter((breakdown) => breakdown.breakdownType === type).length
+        );
+
+        setBreakdownServiceData({
+          labels: breakdownTypes,
+          datasets: [
+            {
+              label: 'Breakdown Service Types',
+              data: breakdownCounts,
+              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+            },
+          ],
+        });
+      } catch (error) {
+        console.error('Error fetching breakdown service data:', error);
+      }
+    };
+
     fetchBreakdownCount();
+    fetchBreakdownServiceData();
   }, []);
 
   const appointmentData = {
@@ -53,6 +89,22 @@ const MainContent = () => {
         data: [20, 25, 44, 30, 35, 40, 20],
         borderColor: '#6B48FF',
         fill: false,
+      },
+    ],
+  };
+
+  const financialData = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+    datasets: [
+      {
+        label: 'Revenue',
+        data: [5000, 7000, 8000, 6000, 9000, 10000], // Example data, replace with actual data from API
+        backgroundColor: '#4BC0C0',
+      },
+      {
+        label: 'Expenses',
+        data: [3000, 4000, 5000, 3500, 4500, 5000], // Example data, replace with actual data from API
+        backgroundColor: '#FF6384',
       },
     ],
   };
@@ -105,7 +157,7 @@ const MainContent = () => {
           </div>
         </div>
 
-        <div className="flex gap-5 mb-5">
+        {/* <div className="flex gap-5 mb-5">
           <div className="flex-1 bg-white p-5 rounded-lg shadow-[0_2px_5px_rgba(0,0,0,0.1)]">
             <h3 className="text-base text-grayText mb-2.5">Appointment Statistics</h3>
             <select className="float-right border-none text-purple text-sm">
@@ -124,6 +176,22 @@ const MainContent = () => {
             </select>
             <div className="h-[200px]">
               <Line data={customerData} options={{ maintainAspectRatio: false }} />
+            </div>
+          </div>
+        </div> */}
+
+       <div className="flex gap-5 mb-5">
+          <div className="flex-1 bg-white p-5 rounded-lg shadow-[0_2px_5px_rgba(0,0,0,0.1)]">
+            <h3 className="text-base text-grayText mb-2.5">Breakdown Service Types</h3>
+            <div className="h-[200px]">
+              <Bar data={breakdownServiceData} options={{ maintainAspectRatio: false }} />
+            </div>
+          </div>
+
+          <div className="flex-1 bg-white p-5 rounded-lg shadow-[0_2px_5px_rgba(0,0,0,0.1)]">
+            <h3 className="text-base text-grayText mb-2.5">Financial Overview</h3>
+            <div className="h-[200px]">
+              <Bar data={financialData} options={{ maintainAspectRatio: false }} />
             </div>
           </div>
         </div>

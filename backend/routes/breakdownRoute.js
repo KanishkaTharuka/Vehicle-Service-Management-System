@@ -153,4 +153,25 @@ router.route("/count").get(async (req, res) => {
     }
 });
 
+// Update driver for a breakdown
+router.put('/update/driver/:id', async (req, res) => {
+    try {
+        const { selectedDriverName } = req.body;
+        const breakdown = await Breakdown.findById(req.params.id);
+
+        if (!breakdown) {
+            return res.status(404).json({ message: 'Breakdown request not found' });
+        }
+
+        // Update the selected driver name
+        breakdown.selectedDriverName = selectedDriverName;
+        await breakdown.save();
+
+        res.status(200).json({ message: 'Driver updated successfully', breakdown });
+    } catch (error) {
+        console.error('Error updating driver:', error);
+        res.status(500).json({ message: 'Error updating driver', error: error.message });
+    }
+});
+
 module.exports = router;
