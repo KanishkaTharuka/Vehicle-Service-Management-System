@@ -4,19 +4,29 @@ import { jsPDF } from 'jspdf';
 import { 
   FaCalendarAlt, FaCar, FaUser, FaPhone, 
   FaEnvelope, FaMapMarkerAlt, FaTools, 
-  FaMoneyBillWave, FaFileDownload 
+  FaMoneyBillWave, FaFileDownload, FaSearch 
 } from 'react-icons/fa';
 
 import Sidebar from '../AdminDashboard/Sidebar';
 
 const AllAppointmentsView = () => {
     const [appointments, setAppointments] = useState([]);
+    const [filteredAppointments, setFilteredAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         fetchAppointments();
     }, []);
+
+    useEffect(() => {
+        const filtered = appointments.filter(appointment => {
+            const searchLower = searchTerm.toLowerCase();
+            return (appointment.cusname?.toLowerCase() || '').includes(searchLower);
+        });
+        setFilteredAppointments(filtered);
+    }, [searchTerm, appointments]);
 
     const fetchAppointments = async () => {
         try {
@@ -134,8 +144,23 @@ const AllAppointmentsView = () => {
             {/* Content */}
             <div className="relative max-w-6xl mx-auto">
                 <h2 className="text-3xl font-bold text-white text-center mb-8">All Appointments Payments</h2>
+                
+                {/* Search Bar */}
+                <div className="mb-6 px-5">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Search by customer name..."
+                            className="w-full p-3 pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    </div>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 p-5">
-                    {appointments.map((appointment) => {
+                    {filteredAppointments.map((appointment) => {
                         const servicePrice = calculateServicePrice(appointment.servicetype, appointment.vehicalmodel);
                         return (
                             <div

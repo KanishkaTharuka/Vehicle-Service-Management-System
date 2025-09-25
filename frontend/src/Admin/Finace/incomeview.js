@@ -122,7 +122,7 @@ const FinanceIncomeView = () => {
                     className="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-all"
                     onClick={handleNewExpenseClick}
                 >
-                    New Expense
+                    New Income
                 </button>
                 <button
                     className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all"
@@ -136,7 +136,7 @@ const FinanceIncomeView = () => {
                 <p className="text-center text-gray-600 mb-5">
                     Below is the history of your income transactions records
                 </p>
-                <div className="mb-5 p-5 bg-gray-100 rounded-lg border border-gray-200 align-middle">
+                <div className="mb-5 p-5 bg-gray-100 rounded-lg border border-gray-200 align-middle text-center">
                     <p className="text-base text-gray-800 ">
                         Total Number of Transactions: <strong className="text-blue-600">{totalTransactions}</strong>
                     </p>

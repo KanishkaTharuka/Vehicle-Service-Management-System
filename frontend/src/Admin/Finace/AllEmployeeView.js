@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
+import { FaSearch } from 'react-icons/fa';
 import './AllEmployeeView.css';
 // import Sidebar from '../AdminDashboard/Sidebar';
 
 function AllEmployeeView() {
     const [employees, setEmployees] = useState([]);
+    const [filteredEmployees, setFilteredEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [workingDays, setWorkingDays] = useState({});
     const [salaries, setSalaries] = useState({});
-    const [errors, setErrors] = useState({}); 
+    const [errors, setErrors] = useState({});
+    const [searchTerm, setSearchTerm] = useState('');
     
     const employeeCardRefs = useRef({});
 
@@ -19,6 +22,7 @@ function AllEmployeeView() {
             try {
                 const response = await axios.get('http://localhost:8070/employee/allEmployees');
                 setEmployees(response.data);
+                setFilteredEmployees(response.data);
                 setLoading(false);
             } catch (err) {
                 setError('Error fetching employees');
@@ -28,6 +32,13 @@ function AllEmployeeView() {
 
         fetchEmployees();
     }, []);
+
+    useEffect(() => {
+        const filtered = employees.filter(employee => 
+            (employee.name?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+        );
+        setFilteredEmployees(filtered);
+    }, [searchTerm, employees]);
 
     const calculateSalary = (employee, days) => {
         if (!days || isNaN(days) || days < 1 || days > 30) return 0;
@@ -119,8 +130,23 @@ function AllEmployeeView() {
     return (
         <div className="employee-cards-container">
             <h2 className="page-title">All Employees Salaries</h2>
+            
+            {/* Search Bar */}
+            <div className="search-container">
+                <div className="search-bar">
+                    <FaSearch className="search-icon" />
+                    <input
+                        type="text"
+                        placeholder="Search by employee name..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="search-input"
+                    />
+                </div>
+            </div>
+
             <div className="employee-cards-grid">
-                {employees.map((employee) => (
+                {filteredEmployees.map((employee) => (
                     <div key={employee._id} className="employee-card" ref={el => employeeCardRefs.current[employee._id] = el}>
                         <div className="card-header">
                             <h3>{employee.name}</h3>
